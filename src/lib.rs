@@ -10,9 +10,11 @@ use xarc::{AtomicXarc, Xarc};
 pub struct BlockhashService;
 
 impl BlockhashService {
-    pub fn start(url: String, update_frequency_millis: u64) -> LatestBlockhash {
+    /// Requires tokio. Spawns a tokio task in the background to periodically update
+    /// the blockhash served by the service.
+    pub fn start(url: impl ToString, update_frequency_millis: u64) -> LatestBlockhash {
         // Initialize rpc client
-        let client = RpcClient::new(url);
+        let client = RpcClient::new(url.to_string());
 
         // Initialize interval
         let mut interval = tokio::time::interval(Duration::from_millis(update_frequency_millis));
